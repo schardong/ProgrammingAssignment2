@@ -1,11 +1,15 @@
-##' .. content for \description{} (no empty lines) ..
+##' Function to add caching support for the base matrix type.
 ##'
-##' .. content for \details{} ..
+##' This function adds caching support for the inverse of a basic R matrix type.
+##' By adding caching support, the inverse of a matrix will be calculated only
+##' once, any subsequent calls will return the results calculated previously.
+##' 
 ##' @title Cache building function for the matrix inverse operation.
 ##' @param x The matrix to be inverted. Default value is an empty matrix.
 ##' @return A list of methods to enable the caching of the matrix inverse
 ##' operation.
 ##' @author Guilherme G. Schardong
+##' @seealso \core{cacheInverse}
 ##' @examples
 ##' A <- matrix(data = rnorm(1000000), nrow = 1000)
 ##' mat.cache <- makeCacheMatrix(A)
@@ -27,15 +31,27 @@ makeCacheMatrix <- function(x = matrix()) {
          getinverse = getinverse)
 }
 
-##' .. content for \description{} (no empty lines) ..
+##' Function to solve the matrix inverse problem with caching support.
 ##'
-##' .. content for \details{} ..
+##' This function calculates the inverse of a matrix. The input matrix is built
+##' by using the \code{makeCacheMatrix} function in order to add caching support
+##' to the base matrix. In this way, future calls to this function using the same
+##' matrix will return the already calculated inverse makeing the process much
+##' faster.
+##' 
 ##' @title Caching solution for the matrix inverse operation.
-##' @param x The matrix to be inverted.
+##' @param x The matrix to be inverted as returned by the \code{makeCacheMatrix}
+##' function.
 ##' @param ... Other parameters for the \code{solve} function.
 ##' @return Returns the matrix inverse of \code{x}.
 ##' @author Guilherme G. Schardong
-##' @seealso \code{solve}
+##' @seealso \code{solve}, \code{makeCacheMatrix}.
+##' @examples
+##' A <- matrix(data = rnorm(1000000), nrow = 1000)
+##' mat.cache <- makeCacheMatrix(A)
+##' for (m in 1:1000) {
+##'     mat.inv <- cacheSolve(mat.cache)
+##' }
 cacheSolve <- function(x, ...) {
     inverse <- x$getinverse()
     if (!is.null(inverse)) {
